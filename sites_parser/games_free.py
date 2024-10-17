@@ -18,12 +18,19 @@ def free_games(bot, message):
         text_about_game = all_text_about_game[0]
 
         # Ссылка на игру
-        last_post_text = str(all_posts[0].select('[title]'))
-        url_part = last_post_text.split('https://store.epicgames.com/ru/p/')
-        url_free_game_epic = url_part[1].split('">')
+        if 'EpicGames' in text_about_game:
+            link_part = 'https://store.epicgames.com/ru/p/'
+            last_post_text = str(all_posts[0].select('[title]'))
+            url_part = last_post_text.split(link_part)
+            url_free_game_epic = url_part[1].split('">')
+            bot.send_message(message.chat.id, f'<b>{text_about_game}</b>\n'
+                                              f'{link_part}{url_free_game_epic[0]}', parse_mode= "html")
+        else:
+            url_part = all_text_about_game[1].split('Страница раздачи: ')
+            url_free_game = url_part[1]
+            bot.send_message(message.chat.id, f'<b>{text_about_game}</b>\n'
+                                              f'{url_free_game}', parse_mode="html")
 
-        bot.send_message(message.chat.id , f'https://store.epicgames.com/ru/p/{url_free_game_epic[0]}\n'
-                                           f'<b>{text_about_game}</b>', parse_mode= "html")
     except:
         bot.send_message(message.chat.id,'Не найдено')
 
@@ -44,12 +51,18 @@ if __name__ == '__main__':
         all_text_about_game = all_posts[0].text.split(' Как получить игру')
         text_about_game = all_text_about_game[0]
 
-        # Ссылка на игру
-        last_post_text = str(all_posts[0].select('[title]'))
-        url_part = last_post_text.split('https://store.epicgames.com/ru/p/')
-        url_free_game_epic = url_part[1].split('">')
+        if 'EpicGames' in text_about_game:
+            link_part = 'https://store.epicgames.com/ru/p/'
+            last_post_text = str(all_posts[0].select('[title]'))
+            url_part = last_post_text.split(link_part)
+            url_free_game_epic = url_part[1].split('">')
+            print(f'{text_about_game}\n'
+                  f'{link_part}{url_free_game_epic[0]}')
+        else:
+            url_part = all_text_about_game[1].split('Страница раздачи: ')
+            url_free_game = url_part[1]
+            print(f'{text_about_game}\n'
+                  f'{url_free_game}')
 
-        print(f'{text_about_game}\n'
-              f'https://store.epicgames.com/ru/p/{url_free_game_epic[0]}')
     except:
         print('Не найдено')
