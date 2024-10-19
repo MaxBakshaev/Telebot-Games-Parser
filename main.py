@@ -121,7 +121,7 @@ def next_step_2(message):
     elif '/search' in message.text:
         search_game(message)
     else:
-        help(message)
+        helper(message)
 
 
 bot.polling(none_stop=True)
