@@ -30,11 +30,7 @@ def plati(game_name, dict_price_url):
     ]
 
     # API поиск игр
-    url_plati = (
-        f'https://plati.io/api/search.ashx?query={game_name}'
-        f'&pagesize={pagesize}&pagenum={pagenum}'
-        f'&visibleOnly=True&response=json'
-    )
+    url_plati = (f'https://plati.io/api/search.ashx?query={game_name}&pagesize={pagesize}&pagenum={pagenum}&visibleOnly=True&response=json')
 
     try:
         response_plati = requests.get(url_plati)
