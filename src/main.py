@@ -5,10 +5,10 @@ import time
 import telebot
 from dotenv import load_dotenv
 
-from sites_parser.platimarket import plati
-from sites_parser.steampay import steam_pay
-from sites_parser.games_free import free_games
-from print_result import print_result
+from src.functions.platimarket import plati
+from src.functions.steampay import steam_pay
+from src.functions.games_free import free_games
+from src.functions.print_result import print_result
 
 time.sleep(5)
 
