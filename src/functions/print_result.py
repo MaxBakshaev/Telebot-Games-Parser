@@ -1,8 +1,17 @@
-# Вывод результата для топ-5 цен
+"""Выводит до 5 цен игр по возрастанию с ссылкой и названием"""
 
 
 def print_result(sorted_prices, bot, message):
+    """ [цена: ('ссылка', 'название')] --> str(цена: ссылка\n название)
 
+    :param sorted_prices: Список с ценами игр по возрастанию,
+    ссылкой и названием
+    :type sorted_prices: List
+    :param bot: модель Telegram-бота
+    :type bot: telebot.TeleBot
+    :param message: сообщение пользователя с названием игры для поиска цен
+    :type message: telebot.types.Message
+    """
     len_pricelist = len(sorted_prices)
 
     try:
