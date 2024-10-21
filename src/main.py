@@ -5,10 +5,7 @@ import time
 import telebot
 from dotenv import load_dotenv
 
-from src.functions.platimarket import plati
-from src.functions.steampay import steam_pay
-from src.functions.games_free import free_games
-from src.functions.print_result import print_result
+from functions import platimarket, steampay, print_result, games_free
 
 time.sleep(5)
 
@@ -60,10 +57,10 @@ def find_keys(message):
     dict_price_url = {}
 
     # Поиск ключей на сайте plati.ru
-    plati(game_name, dict_price_url)
+    platimarket.plati(game_name, dict_price_url)
 
     # Поиск ключей на сайте steampay.com
-    steam_pay(game_name, dict_price_url)
+    steampay.steam_pay(game_name, dict_price_url)
 
     # Сортировка полученных цен по возрастанию
     sorted_prices = sorted(dict_price_url.items())
@@ -72,7 +69,7 @@ def find_keys(message):
     bot.delete_message(message.chat.id, msg.id)
 
     # Вывод результата для топ-5 цен
-    print_result(sorted_prices, bot, message)
+    print_result.print_result(sorted_prices, bot, message)
 
     # Что делать после вывода результата
     bot.register_next_step_handler(message, next_step)
@@ -103,7 +100,7 @@ def search_free_games(message):
     )
 
     # Получить информацию о раздаче игр
-    free_games(bot, message)
+    games_free.free_games(bot, message)
 
     # Удалить сообщение mseg
     bot.delete_message(message.chat.id, mseg.id)
