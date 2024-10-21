@@ -1,4 +1,3 @@
-# Главная функция, запускает бота
 import os
 import time
 
@@ -20,26 +19,22 @@ def start(message):
         '<b>Привет, выбери команду:</b>\n'
         '1. /search - найти самые дешевые игры в Steam\n'
         '2. /free - получить информацию о раздаче бесплатных игр',
-        parse_mode='html'
-    )
+        parse_mode='html')
 
 
 @bot.message_handler(commands=['help'])
 def helper(message):
-
     bot.send_message(
         message.chat.id,
         '<b>Нажмите на команду или введите ее:</b>\n'
         '1. /search - найти самые дешевые игры в Steam\n'
         '2. /free - получить информацию о раздаче бесплатных игр',
-        parse_mode='html'
-    )
+        parse_mode='html')
 
 
 # Поиск ключей
 @bot.message_handler(commands=['search'])
 def search_game(message):
-
     bot.send_message(
         message.chat.id, 'Введите название игры, желательно, полное 😉')
 
@@ -49,8 +44,7 @@ def search_game(message):
 def find_keys(message):
     msg = bot.send_message(
         message.chat.id, 'Запрос выполняется...\n'
-                         'Пожалуйста, ожидайте'
-    )
+                         'Пожалуйста, ожидайте')
 
     game_name = message.text.lower()
     # Словарь с ценой, ссылкой и названием игр
@@ -82,10 +76,10 @@ def next_step(message):
     elif '/free' in message.text:
         search_free_games(message)
     elif '/help' in message.text:
-        help(message)
+        helper(message)
     elif '/search' in message.text:
         search_game(message)
-    # Или продолжить искать игры
+    # или продолжить искать игры
     else:
         find_keys(message)
 
@@ -96,8 +90,7 @@ def search_free_games(message):
 
     mseg = bot.send_message(
         message.chat.id, 'Запрос выполняется...\n'
-                         'Пожалуйста, ожидайте'
-    )
+                         'Пожалуйста, ожидайте')
 
     # Получить информацию о раздаче игр
     games_free.free_games(bot, message)
