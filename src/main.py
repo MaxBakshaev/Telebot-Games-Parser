@@ -1,3 +1,5 @@
+"""Главный модуль, запускает бота"""
+
 import os
 import time
 
@@ -14,6 +16,8 @@ bot = telebot.TeleBot(os.getenv('TOKEN'))
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    """Выводит сообщение при входе"""
+
     bot.send_message(
         message.chat.id,
         '<b>Привет, выбери команду:</b>\n'
@@ -24,6 +28,8 @@ def start(message):
 
 @bot.message_handler(commands=['help'])
 def helper(message):
+    """Показывает основные команды"""
+
     bot.send_message(
         message.chat.id,
         '<b>Нажмите на команду или введите ее:</b>\n'
@@ -32,9 +38,10 @@ def helper(message):
         parse_mode='html')
 
 
-# Поиск ключей
 @bot.message_handler(commands=['search'])
 def search_game(message):
+    """Выводит сообщение, после которого запускается функция поиска ключей"""
+
     bot.send_message(
         message.chat.id, 'Введите название игры, желательно, полное 😉')
 
@@ -42,6 +49,8 @@ def search_game(message):
 
 
 def find_keys(message):
+    """Находит самые дешевые ключи игр"""
+
     msg = bot.send_message(
         message.chat.id, 'Запрос выполняется...\n'
                          'Пожалуйста, ожидайте')
@@ -57,7 +66,7 @@ def find_keys(message):
     steampay.steam_pay(game_name, dict_price_url)
 
     # Сортировка полученных цен по возрастанию
-    sorted_prices = sorted(dict_price_url.items())
+    sorted_prices = tuple(sorted(dict_price_url.items()))
 
     # Удалить сообщение msg
     bot.delete_message(message.chat.id, msg.id)
@@ -66,10 +75,12 @@ def find_keys(message):
     print_result.print_result(sorted_prices, bot, message)
 
     # Что делать после вывода результата
-    bot.register_next_step_handler(message, next_step)
+    bot.register_next_step_handler(message, step_after_find_keys)
 
 
-def next_step(message):
+def step_after_find_keys(message):
+    """Действие после завершения функции find_keys()"""
+
     # Ввести команду
     if '/start' in message.text:
         start(message)
@@ -84,9 +95,9 @@ def next_step(message):
         find_keys(message)
 
 
-# Поиск раздачи бесплатных игр
 @bot.message_handler(commands=['free'])
 def search_free_games(message):
+    """Находит раздачи бесплатных игр"""
 
     mseg = bot.send_message(
         message.chat.id, 'Запрос выполняется...\n'
@@ -99,10 +110,12 @@ def search_free_games(message):
     bot.delete_message(message.chat.id, mseg.id)
 
     # Что делать после вывода результата
-    bot.register_next_step_handler(message, next_step_2)
+    bot.register_next_step_handler(message, step_after_search_free_games)
 
 
-def next_step_2(message):
+def step_after_search_free_games(message):
+    """Действие после завершения функции search_free_games()"""
+
     # Ввести команду
     if '/start' in message.text:
         start(message)

@@ -1,16 +1,11 @@
-"""Выводит до 5 цен игр по возрастанию с ссылкой и названием"""
+"""Модуль для вывода до 5 цен игр по возрастанию с ссылкой и названием"""
 
 
 def print_result(sorted_prices, bot, message):
-    """ [цена: ('ссылка', 'название')] --> str(цена: ссылка\n название)
+    """((цена: ('ссылка', 'название')),) --> str(цена: ссылка\n название)
 
-    :param sorted_prices: Список с ценами игр по возрастанию,
-    ссылкой и названием
-    :type sorted_prices: List
-    :param bot: модель Telegram-бота
-    :type bot: telebot.TeleBot
-    :param message: сообщение пользователя с названием игры для поиска цен
-    :type message: telebot.types.Message
+    :param sorted_prices: Кортеж с ценами игр по возрастанию, ссылкой и названием
+    :type sorted_prices: Tuple
     """
     len_pricelist = len(sorted_prices)
 
@@ -116,7 +111,7 @@ def print_result(sorted_prices, bot, message):
 
 if __name__ == '__main__':
 
-    sorted_prices = [
+    sorted_prices = (
         (3259, ('https://plati.market/itm/3901794',
                 'STARFIELD (STEAM/RU) 0% КАРТОЙ + ПОДАРОК')),
         (3399, ('https://plati.market/itm/3898631',
@@ -130,8 +125,8 @@ if __name__ == '__main__':
         (6990, ('https://plati.market/itm/3782532',
                 '🌌🌟STARFIELD STEAM GIFT🌟🌌 ☑️РФ/МИР☑️')),
         (7990, ('https://plati.market/itm/3782367',
-                'STARFIELD DIGITAL PREMIUM EDITION RU/KZ/СНГ/TR/AR'))
-    ]
+                'STARFIELD DIGITAL PREMIUM EDITION RU/KZ/СНГ/TR/AR')),
+    )
 
     print(
         f'<b>{sorted_prices[0][0]} руб.</b> - {sorted_prices[0][1][0]}\n'

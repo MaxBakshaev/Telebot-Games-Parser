@@ -1,9 +1,12 @@
-# Поиск раздач бесплатных игр
+"""Модуль для поиска раздач бесплатных игр"""
+
 import requests
 from bs4 import BeautifulSoup
 
 
 def free_games(bot, message):
+    """Находит раздачи и выводит текст: Раздача 'название игры'\n 'ссылка на игру' """
+
     try:
         url_games = 'https://freesteam.ru/category/active/'
         headers = {
@@ -18,6 +21,8 @@ def free_games(bot, message):
         request_games = requests.get(url_games, headers=headers)
         request_games.raise_for_status()
         soup_games = BeautifulSoup(request_games.text, 'lxml')
+
+        # перечень всех постов с раздачей играм
         all_posts = soup_games.find_all(
             'div', class_='col-lg-4 col-md-4 three-columns post-box')
 
@@ -32,7 +37,9 @@ def free_games(bot, message):
                     if 'аздач' in element:
                         post_info.append(element)
 
+                # раздача + название игры
                 game_info = post_info[1].split(' ')
+                # ссылка на игру
                 post_link = game_info[2]
 
                 if 'http' in post_link:

@@ -1,10 +1,17 @@
-# Поиск ключей на сайте plati.ru
+"""Модуль для поиска ключей на сайте plati.ru"""
+
 import requests
 from bs4 import BeautifulSoup
 
 
 def plati(game_name, dict_price_url):
-# Получение информации о ключах игр из API сайта platimarket.ru
+    """Обрабатывает информацию о ключах игр из API сайта plati.ru
+
+    :param game_name: название игры, введенное пользователем для поиска цен
+    :type game_name: str
+    :param dict_price_url: словарь для заполнения по форме {(цена): (ссылка, название с сайта)}
+    :type dict_price_url: Dict
+    """
 
     # количество продавцов на страницу
     pagesize = 10
@@ -12,15 +19,15 @@ def plati(game_name, dict_price_url):
     # номер страницы
     pagenum = 1
 
-    banwords_name = [
+    banwords_name = (
         'ps3', 'ps4', 'ps5', 'без рф', 'no ru', 'без активации в рф',
         'не включая рф', 'не активируется в рф', 'ubisoft', 'xbox', 'origin',
         'gog', 'аренда', 'новый аккаунт', 'чистый аккаунт', 'пустой аккаунт',
         'без ru', 'не для рф', 'не для россии', 'не для ru', 'аренда',
         'rockstar', 'rockstar'
-    ]
+    )
 
-    banwords_description = [
+    banwords_description = (
         'без рф', 'недоступна в рф', 'недоступно в рф',
         'недоступна для россии', 'недоступна для аккаунтов россии',
         'без активации в рф', 'не включая рф', 'не активируется в рф',
@@ -28,7 +35,7 @@ def plati(game_name, dict_price_url):
         'без ru', 'не для рф', 'оффлайн steam', 'доступ к счету',
         'невозможно получить на аккаунтах с регионом рф', 'аренда',
         'недоступно для аккаунтов: Россия', 'нельзя активировать с российским'
-    ]
+    )
 
     # API поиск игр
     url_plati = f'https://plati.io/api/search.ashx?query={game_name}&pagesize={pagesize}&pagenum={pagenum}&visibleOnly=True&response=json'
@@ -53,7 +60,8 @@ def plati(game_name, dict_price_url):
 def check_reliability(
         dict_price_url, repo_dicts, banwords_name, banwords_description,
         game_name):
-    # Проверка продавцов из списка на надежность
+    """Проверяет продавцов из списка на надежность"""
+
     for repo_dict in repo_dicts:
         try:
             # cтрока 'name' с названием игры на сайте
@@ -72,7 +80,7 @@ def check_reliability(
             check_key_in_stock(repo_url)
 
             # цена игры
-            repo_price = repo_dict['price_rur']
+            repo_price = int(repo_dict['price_rur'])
 
             # Если проходит проверку на надежность, то
             # цена игры и ссылка добавляются в словарь
@@ -85,7 +93,7 @@ def check_reliability(
 def check_different_filters(
         game_name, name_in_site, repo_dict, banwords_name,
         banwords_description):
-    # Проверка надежности продавца по разным фильтрам
+    """Проверяет надежность продавца по разным фильтрам"""
 
     # Проверка названия игры
     if game_name not in name_in_site:
@@ -140,7 +148,8 @@ def check_different_filters(
 
 
 def check_key_in_stock(repo_url):
-    # Проверка на наличие ключа в продаже
+    """Проверяет наличие ключа в продаже"""
+
     try:
         response_site = requests.get(repo_url)
         response_site.raise_for_status()
@@ -158,7 +167,7 @@ def check_key_in_stock(repo_url):
 
 
 if __name__ == '__main__':
-    game_name = input('Введите название игры: ').lower()
+    game_name = input('Введите название игры: ').lower() # напр. disco elysium
     dict_price_url = {}
     plati(game_name, dict_price_url)
     print(dict_price_url)

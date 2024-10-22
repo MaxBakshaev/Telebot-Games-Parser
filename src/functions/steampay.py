@@ -1,10 +1,17 @@
-# Поиск ключей на сайте steampay.com
+"""Модуль для поиска ключей на сайте steampay.com"""
+
 import requests
 from bs4 import BeautifulSoup
 
 
 def steam_pay(game_name, dict_price_url):
-# Получение информации о ключе игры с сайта steampay.com
+    """Обрабатывает информацию о ключе игры из страницы игры сайта steampay.com
+
+    :param game_name: название игры, введенное пользователем для поиска цен
+    :type game_name: str
+    :param dict_price_url: словарь для заполнения по форме {int(цена): (ссылка, название с сайта)}
+    :type dict_price_url: Dict
+    """
 
     # Формирование ссылки для перехода на страницу игры
     game_name_link = '-'.join(list(game_name.split(' ')))
@@ -29,7 +36,8 @@ def steam_pay(game_name, dict_price_url):
 
 
 def check_key_in_stock(soup_steampay):
-    # Проверка на наличие ключа в продаже
+    """Проверяет наличие ключа в продаже"""
+
     key_in_stock = soup_steampay.find(
         'span', class_='product__advantages-orange')
     stock = str(key_in_stock)
@@ -40,7 +48,8 @@ def check_key_in_stock(soup_steampay):
 
 
 def check_ru_region(soup_steampay):
-    # Проверка региона Росссия
+    """Проверяет соответствие региона Росссия"""
+
     region = soup_steampay.find_all(
         'ul', class_='product__info-inner-block-list')
     sell_region = str(region[3])
@@ -49,7 +58,8 @@ def check_ru_region(soup_steampay):
 
 
 def gameprice_form(dict_price_url, soup_steampay, url_steampay):
-    # Формирование цены игры
+    """Формирует цену игры"""
+
     game_name_steampay = soup_steampay.find('h1', class_='product__title')
     name_steampay = game_name_steampay.text.strip()
     line = str(soup_steampay.find('div', class_='product__current-price'))
