@@ -15,10 +15,10 @@ bot = telebot.TeleBot(os.getenv('TOKEN'))
 
 
 @bot.message_handler(commands=['start'])
-def start(message):
+def start(message: telebot.types.Message) -> telebot.types.Message:
     """Выводит сообщение при входе"""
 
-    bot.send_message(
+    return bot.send_message(
         message.chat.id,
         '<b>Привет, выбери команду:</b>\n'
         '1. /search - найти самые дешевые игры в Steam\n'
@@ -27,10 +27,10 @@ def start(message):
 
 
 @bot.message_handler(commands=['help'])
-def helper(message):
+def helper(message: telebot.types.Message) -> telebot.types.Message:
     """Показывает основные команды"""
 
-    bot.send_message(
+    return bot.send_message(
         message.chat.id,
         '<b>Нажмите на команду или введите ее:</b>\n'
         '1. /search - найти самые дешевые игры в Steam\n'
@@ -39,7 +39,7 @@ def helper(message):
 
 
 @bot.message_handler(commands=['search'])
-def search_game(message):
+def search_game(message: telebot.types.Message) -> None:
     """Выводит сообщение, после которого запускается функция поиска ключей"""
 
     bot.send_message(
@@ -48,7 +48,7 @@ def search_game(message):
     bot.register_next_step_handler(message, find_keys)
 
 
-def find_keys(message):
+def find_keys(message: telebot.types.Message) -> None:
     """Находит самые дешевые ключи игр"""
 
     msg = bot.send_message(
@@ -56,8 +56,9 @@ def find_keys(message):
                          'Пожалуйста, ожидайте')
 
     game_name = message.text.lower()
-    # Словарь с ценой, ссылкой и названием игр
-    dict_price_url = {}
+
+    # словарь с ценой, ссылкой и названием игр
+    dict_price_url: dict[int, tuple[str, str]] = {}
 
     # Поиск ключей на сайте plati.ru
     platimarket.plati(game_name, dict_price_url)
@@ -66,7 +67,7 @@ def find_keys(message):
     steampay.steam_pay(game_name, dict_price_url)
 
     # Сортировка полученных цен по возрастанию
-    sorted_prices = tuple(sorted(dict_price_url.items()))
+    sorted_prices = sorted(dict_price_url.items())
 
     # Удалить сообщение msg
     bot.delete_message(message.chat.id, msg.id)
@@ -78,7 +79,7 @@ def find_keys(message):
     bot.register_next_step_handler(message, step_after_find_keys)
 
 
-def step_after_find_keys(message):
+def step_after_find_keys(message: telebot.types.Message) -> None:
     """Действие после завершения функции find_keys()"""
 
     # Ввести команду
@@ -96,7 +97,7 @@ def step_after_find_keys(message):
 
 
 @bot.message_handler(commands=['free'])
-def search_free_games(message):
+def search_free_games(message: telebot.types.Message) -> None:
     """Находит раздачи бесплатных игр"""
 
     mseg = bot.send_message(
@@ -113,7 +114,7 @@ def search_free_games(message):
     bot.register_next_step_handler(message, step_after_search_free_games)
 
 
-def step_after_search_free_games(message):
+def step_after_search_free_games(message: telebot.types.Message) -> None:
     """Действие после завершения функции search_free_games()"""
 
     # Ввести команду

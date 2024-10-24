@@ -1,17 +1,21 @@
-"""Модуль для вывода до 5 цен игр по возрастанию с ссылкой и названием"""
+"""Модуль для вывода до 5 самых дешевых цен игр с ссылкой и названием"""
+import telebot
 
 
-def print_result(sorted_prices, bot, message):
-    """((цена: ('ссылка', 'название')),) --> str(цена: ссылка\n название)
+def print_result(
+        sorted_prices: list, bot: telebot.TeleBot,
+        message: telebot.types.Message) -> telebot.types.Message:
+    """Выводит до 5 самых дешевых цен игр с ссылкой и названием
 
-    :param sorted_prices: Кортеж с ценами игр по возрастанию, ссылкой и названием
-    :type sorted_prices: Tuple
+    :param sorted_prices: Список с ценами игр по возрастанию, ссылкой и
+    названием
+    :type sorted_prices: List
     """
     len_pricelist = len(sorted_prices)
 
     try:
         if len_pricelist >= 5:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 f'<b>{sorted_prices[0][0]} руб.</b> - '
                 f'{sorted_prices[0][1][0]}\n'
@@ -35,7 +39,7 @@ def print_result(sorted_prices, bot, message):
             )
 
         elif len_pricelist == 4:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 f'<b>{sorted_prices[0][0]} руб.</b> - '
                 f'{sorted_prices[0][1][0]}\n'
@@ -55,7 +59,7 @@ def print_result(sorted_prices, bot, message):
             )
 
         elif len_pricelist == 3:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 f'<b>{sorted_prices[0][0]} руб.</b> - '
                 f'{sorted_prices[0][1][0]}\n'
@@ -71,7 +75,7 @@ def print_result(sorted_prices, bot, message):
             )
 
         elif len_pricelist == 2:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 f'<b>{sorted_prices[0][0]} руб.</b> - '
                 f'{sorted_prices[0][1][0]}\n'
@@ -83,7 +87,7 @@ def print_result(sorted_prices, bot, message):
             )
 
         elif len_pricelist == 1:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 f'<b>{sorted_prices[0][0]} руб.</b> - '
                 f'{sorted_prices[0][1][0]}\n'
@@ -91,7 +95,7 @@ def print_result(sorted_prices, bot, message):
             )
 
         else:
-            bot.send_message(
+            return bot.send_message(
                 message.chat.id,
                 'Ключи не найдены.\n'
                 'Пожалуйста, проверьте точное написание названия игры.\n'
@@ -100,7 +104,7 @@ def print_result(sorted_prices, bot, message):
             )
 
     except Exception:
-        bot.send_message(
+        return bot.send_message(
             message.chat.id,
             'Ключи не найдены.\n'
             'Пожалуйста, проверьте точное написание названия игры.\n'

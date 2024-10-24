@@ -1,11 +1,12 @@
 """Модуль для поиска раздач бесплатных игр"""
 
+import telebot
 import requests
 from bs4 import BeautifulSoup
 
 
-def free_games(bot, message):
-    """Находит раздачи и выводит текст: Раздача 'название игры'\n 'ссылка на игру' """
+def free_games(bot: telebot.TeleBot, message: telebot.types.Message):
+    """Находит раздачи и выводит информацию о них"""
 
     try:
         url_games = 'https://freesteam.ru/category/active/'
@@ -43,9 +44,9 @@ def free_games(bot, message):
                 post_link = game_info[2]
 
                 if 'http' in post_link:
-                    bot.send_message(message.chat.id,
-                                     f'<b>{post_info[0]}:</b>\n'
-                                     f'{post_link}', parse_mode="html")
+                    bot.send_message(
+                        message.chat.id, f'<b>{post_info[0]}:</b>\n'
+                                         f'{post_link}', parse_mode="html")
             except Exception:
                 continue
     except Exception:

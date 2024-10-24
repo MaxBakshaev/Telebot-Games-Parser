@@ -4,13 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def plati(game_name, dict_price_url):
+def plati(game_name: str, dict_price_url: dict) -> None:
     """Обрабатывает информацию о ключах игр из API сайта plati.ru
 
     :param game_name: название игры, введенное пользователем для поиска цен
-    :type game_name: str
-    :param dict_price_url: словарь для заполнения по форме {(цена): (ссылка, название с сайта)}
-    :type dict_price_url: Dict
+    :param dict_price_url: словарь для заполнения по форме {(цена): (ссылка,
+    название с сайта)}
     """
 
     # количество продавцов на страницу
@@ -53,13 +52,14 @@ def plati(game_name, dict_price_url):
             dict_price_url, repo_dicts, banwords_name, banwords_description,
             game_name)
 
+
     except Exception:
         pass
 
 
 def check_reliability(
-        dict_price_url, repo_dicts, banwords_name, banwords_description,
-        game_name):
+        dict_price_url: dict, repo_dicts: list, banwords_name: tuple,
+        banwords_description: tuple, game_name: str) -> None:
     """Проверяет продавцов из списка на надежность"""
 
     for repo_dict in repo_dicts:
@@ -91,8 +91,8 @@ def check_reliability(
 
 
 def check_different_filters(
-        game_name, name_in_site, repo_dict, banwords_name,
-        banwords_description):
+        game_name: str, name_in_site: str, repo_dict: dict,
+        banwords_name: tuple, banwords_description) -> None:
     """Проверяет надежность продавца по разным фильтрам"""
 
     # Проверка названия игры
@@ -147,7 +147,7 @@ def check_different_filters(
         raise Exception
 
 
-def check_key_in_stock(repo_url):
+def check_key_in_stock(repo_url: str) -> None:
     """Проверяет наличие ключа в продаже"""
 
     try:
@@ -167,7 +167,7 @@ def check_key_in_stock(repo_url):
 
 
 if __name__ == '__main__':
-    game_name = input('Введите название игры: ').lower() # напр. disco elysium
-    dict_price_url = {}
+    game_name = input('Введите название игры: ').lower()  # напр. disco elysium
+    dict_price_url: dict[int, tuple[str, str]] = {}
     plati(game_name, dict_price_url)
     print(dict_price_url)
