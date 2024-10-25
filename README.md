@@ -21,17 +21,28 @@
 Получить токен и создать бота можно по ссылке: <https://t.me/botfather>. <br/>
 
 
-2. Клонирование проекта:
+2. Склонируйте репозиторий и перейдите в рабочую директорию проекта:
 ```
-$ git clone https://github.com/MaxBakshaev/Telebot-Games-Parser.git
-$ cd Telebot-Games-Parser
+git clone https://github.com/MaxBakshaev/Telebot-Games-Parser.git
 ```
-3. Установка зависимостей:
 ```
-$ pip install -r requirements.txt
+cd Telebot-Games-Parser
 ```
-4. Запуск и остановка бота:
+3. Создайте и активируйте виртуальную среду:
 ```
-$ python src/main.py
-$ Ctrl + C
+python -m venv venv
+```
+```
+venv\Scripts\activate
+```
+4. Установите зависимости:
+```
+pip install -r requirements.txt
+```
+5. Запуск и остановка бота:
+```
+python src/main.py
+```
+```
+Ctrl + C
 ```
