@@ -3,9 +3,10 @@
 import os
 import time
 
-import telebot
 from dotenv import load_dotenv
+import telebot
 
+from constants import GREETING_TEXT, HELP_TEXT, TYPE_GAME_NAME, WAITING_TEXT
 from functions import platimarket, steampay, print_result, games_free
 
 time.sleep(5)
@@ -18,24 +19,14 @@ bot = telebot.TeleBot(os.getenv('TOKEN'))
 def start(message: telebot.types.Message) -> telebot.types.Message:
     """Выводит сообщение при входе"""
 
-    return bot.send_message(
-        message.chat.id,
-        '<b>Привет, выбери команду:</b>\n'
-        '1. /search - найти самые дешевые игры в Steam\n'
-        '2. /free - получить информацию о раздаче бесплатных игр',
-        parse_mode='html')
+    return bot.send_message(message.chat.id, GREETING_TEXT, parse_mode='html')
 
 
 @bot.message_handler(commands=['help'])
 def helper(message: telebot.types.Message) -> telebot.types.Message:
     """Показывает основные команды"""
 
-    return bot.send_message(
-        message.chat.id,
-        '<b>Нажмите на команду или введите ее:</b>\n'
-        '1. /search - найти самые дешевые игры в Steam\n'
-        '2. /free - получить информацию о раздаче бесплатных игр',
-        parse_mode='html')
+    return bot.send_message(message.chat.id, HELP_TEXT, parse_mode='html')
 
 
 @bot.message_handler(commands=['search'])
@@ -43,7 +34,7 @@ def search_game(message: telebot.types.Message) -> None:
     """Выводит сообщение, после которого запускается функция поиска ключей"""
 
     bot.send_message(
-        message.chat.id, 'Введите название игры, желательно, полное 😉')
+        message.chat.id, TYPE_GAME_NAME)
 
     bot.register_next_step_handler(message, find_keys)
 
@@ -51,14 +42,12 @@ def search_game(message: telebot.types.Message) -> None:
 def find_keys(message: telebot.types.Message) -> None:
     """Находит самые дешевые ключи игр"""
 
-    msg = bot.send_message(
-        message.chat.id, 'Запрос выполняется...\n'
-                         'Пожалуйста, ожидайте')
+    msg = bot.send_message(message.chat.id, WAITING_TEXT)
 
     game_name = message.text.lower()
 
-    # словарь с ценой, ссылкой и названием игр
-    dict_price_url: dict[int, tuple[str, str]] = {}
+    # словарь для добавления цены, ссылки и названий игр
+    dict_price_url = {}
 
     # Поиск ключей на сайте plati.ru
     platimarket.plati(game_name, dict_price_url)
@@ -101,8 +90,7 @@ def search_free_games(message: telebot.types.Message) -> None:
     """Находит раздачи бесплатных игр"""
 
     mseg = bot.send_message(
-        message.chat.id, 'Запрос выполняется...\n'
-                         'Пожалуйста, ожидайте')
+        message.chat.id, WAITING_TEXT)
 
     # Получить информацию о раздаче игр
     games_free.free_games(bot, message)

@@ -3,41 +3,24 @@
 import requests
 from bs4 import BeautifulSoup
 
+from src.constants import (
+    BANWORDS_IN_NAME, BANWORDS_IN_DESCRIPTION, PAGESIZE, PAGENUM, URL_PLATI,
+    TYPE_GAME_NAME)
+
 
 def plati(game_name: str, dict_price_url: dict) -> None:
     """Обрабатывает информацию о ключах игр из API сайта plati.ru
 
     :param game_name: название игры, введенное пользователем для поиска цен
-    :param dict_price_url: словарь для заполнения по форме {(цена): (ссылка,
-    название с сайта)}
+    :param dict_price_url: словарь для заполнения ценой, ссылкой и названием
     """
 
-    # количество продавцов на страницу
-    pagesize = 10
-
-    # номер страницы
-    pagenum = 1
-
-    banwords_name = (
-        'ps3', 'ps4', 'ps5', 'без рф', 'no ru', 'без активации в рф',
-        'не включая рф', 'не активируется в рф', 'ubisoft', 'xbox', 'origin',
-        'gog', 'аренда', 'новый аккаунт', 'чистый аккаунт', 'пустой аккаунт',
-        'без ru', 'не для рф', 'не для россии', 'не для ru', 'аренда',
-        'rockstar', 'rockstar'
-    )
-
-    banwords_description = (
-        'без рф', 'недоступна в рф', 'недоступно в рф',
-        'недоступна для россии', 'недоступна для аккаунтов россии',
-        'без активации в рф', 'не включая рф', 'не активируется в рф',
-        'кроме рф', 'кроме россии', 'не работает в рф', 'не работает в россии',
-        'без ru', 'не для рф', 'оффлайн steam', 'доступ к счету',
-        'невозможно получить на аккаунтах с регионом рф', 'аренда',
-        'недоступно для аккаунтов: Россия', 'нельзя активировать с российским'
-    )
-
     # API поиск игр
-    url_plati = f'https://plati.io/api/search.ashx?query={game_name}&pagesize={pagesize}&pagenum={pagenum}&visibleOnly=True&response=json'
+    url_plati = URL_PLATI.format(
+        game_name=game_name,
+        pagesize=PAGESIZE,
+        pagenum=PAGENUM
+    )
 
     try:
         response_plati = requests.get(url_plati)
@@ -49,17 +32,15 @@ def plati(game_name: str, dict_price_url: dict) -> None:
 
         # Проверка продавцов из списка на надежность
         check_reliability(
-            dict_price_url, repo_dicts, banwords_name, banwords_description,
-            game_name)
-
-
+            dict_price_url, repo_dicts, BANWORDS_IN_NAME,
+            BANWORDS_IN_DESCRIPTION, game_name)
     except Exception:
         pass
 
 
 def check_reliability(
-        dict_price_url: dict, repo_dicts: list, banwords_name: tuple,
-        banwords_description: tuple, game_name: str) -> None:
+        dict_price_url: dict, repo_dicts: list, BANWORDS_IN_NAME: tuple,
+        BANWORDS_IN_DESCRIPTION: tuple, game_name: str) -> None:
     """Проверяет продавцов из списка на надежность"""
 
     for repo_dict in repo_dicts:
@@ -70,8 +51,8 @@ def check_reliability(
 
             # Проверка надежности продавца по разным фильтрам
             check_different_filters(
-                game_name, name_in_site, repo_dict, banwords_name,
-                banwords_description)
+                game_name, name_in_site, repo_dict, BANWORDS_IN_NAME,
+                BANWORDS_IN_DESCRIPTION)
 
             # ссылка на игру
             repo_url = repo_dict['url']
@@ -92,7 +73,7 @@ def check_reliability(
 
 def check_different_filters(
         game_name: str, name_in_site: str, repo_dict: dict,
-        banwords_name: tuple, banwords_description) -> None:
+        BANWORDS_IN_NAME: tuple, BANWORDS_IN_DESCRIPTION: tuple) -> None:
     """Проверяет надежность продавца по разным фильтрам"""
 
     # Проверка названия игры
@@ -100,13 +81,12 @@ def check_different_filters(
         raise Exception
 
     # Проверка слов исключений для названия
-    if any(word in name_in_site for word in banwords_name):
+    if any(word in name_in_site for word in BANWORDS_IN_NAME):
         raise Exception
 
     # Проверка слов исключений для описания
     description = repo_dict['description'].lower()
-    if any(word_des in description for word_des in
-           banwords_description):
+    if any(word_des in description for word_des in BANWORDS_IN_DESCRIPTION):
         raise Exception
 
     # Проверка платформы Steam
@@ -167,7 +147,7 @@ def check_key_in_stock(repo_url: str) -> None:
 
 
 if __name__ == '__main__':
-    game_name = input('Введите название игры: ').lower()  # напр. disco elysium
-    dict_price_url: dict[int, tuple[str, str]] = {}
+    game_name = input(TYPE_GAME_NAME).lower()  # напр. disco elysium
+    dict_price_url = {}
     plati(game_name, dict_price_url)
     print(dict_price_url)

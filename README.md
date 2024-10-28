@@ -23,7 +23,7 @@
 
 2. Склонируйте репозиторий и перейдите в рабочую директорию проекта:
 ```
-git clone https://github.com/MaxBakshaev/Telebot-Games-Parser.git
+git clone git@github.com:MaxBakshaev/Telebot-Games-Parser.git
 ```
 ```
 cd Telebot-Games-Parser

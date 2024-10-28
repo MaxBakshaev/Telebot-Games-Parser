@@ -3,8 +3,12 @@
 import requests
 from bs4 import BeautifulSoup
 
+from src.constants import URL_STEAMPAY
 
-def steam_pay(game_name: str, dict_price_url: dict) -> None:
+
+def steam_pay(
+        game_name: str, dict_price_url: dict)\
+        -> None:
     """Обрабатывает информацию о ключе игры из страницы игры сайта steampay.com
 
     :param game_name: название игры, введенное пользователем для поиска цен
@@ -14,7 +18,8 @@ def steam_pay(game_name: str, dict_price_url: dict) -> None:
 
     # Формирование ссылки для перехода на страницу игры
     game_name_link = '-'.join(list(game_name.split(' ')))
-    url_steampay = f'https://steampay.com/game/{game_name_link}'
+
+    url_steampay = URL_STEAMPAY.format(game_name_link=game_name_link)
 
     try:
         response_steampay = requests.get(url_steampay)
@@ -67,15 +72,14 @@ def gameprice_form(
     line = str(soup_steampay.find(
         'div', class_='product__current-price'))
     line_in_list = line.split(' ')
-    element = line_in_list[1]
-    price_in_element = ''.join([x for x in element if x.isdigit()])
-
+    price_in_element = ''.join([x for x in line_in_list if x.isdigit()])
     # Цена игры и ссылка добавляются в словарь
     dict_price_url[int(price_in_element)] = url_steampay, name_steampay
 
 
 if __name__ == '__main__':
-    game_name = input('Введите название игры: ').lower()  # напр. Superliminal
-    dict_price_url: dict[int, tuple[str, str]] = {}
+    from src.constants import TYPE_GAME_NAME
+    game_name = input(TYPE_GAME_NAME).lower()  # напр. Superliminal
+    dict_price_url = {}
     steam_pay(game_name, dict_price_url)
     print(dict_price_url)

@@ -4,26 +4,18 @@ import telebot
 import requests
 from bs4 import BeautifulSoup
 
+from src.constants import HEADERS, URL_GAMES_FREE
+
 
 def free_games(bot: telebot.TeleBot, message: telebot.types.Message):
     """Находит раздачи и выводит информацию о них"""
 
     try:
-        url_games = 'https://freesteam.ru/category/active/'
-        headers = {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,'
-                      'image/webp,image/apng,*/*;q=0.8,application/'
-                      'signed-exchange;v=b3;q=0.9',
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/84.0.4147.105 Safari/537.36'
-        }
-
-        request_games = requests.get(url_games, headers=headers)
+        request_games = requests.get(URL_GAMES_FREE, headers=HEADERS)
         request_games.raise_for_status()
         soup_games = BeautifulSoup(request_games.text, 'lxml')
 
-        # перечень всех постов с раздачей играм
+        # перечень всех постов с раздачей игр
         all_posts = soup_games.find_all(
             'div', class_='col-lg-4 col-md-4 three-columns post-box')
 
@@ -55,17 +47,7 @@ def free_games(bot: telebot.TeleBot, message: telebot.types.Message):
 
 if __name__ == '__main__':
     try:
-        url_games = 'https://freesteam.ru/category/active/'
-        headers = {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,'
-                      'image/webp,image/apng,*/*;q=0.8,application/'
-                      'signed-exchange;v=b3;q=0.9',
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/84.0.4147.105 Safari/537.36'
-        }
-
-        request_games = requests.get(url_games, headers=headers)
+        request_games = requests.get(URL_GAMES_FREE, headers=HEADERS)
         request_games.raise_for_status()
         soup_games = BeautifulSoup(request_games.text, 'lxml')
         all_posts = soup_games.find_all(
