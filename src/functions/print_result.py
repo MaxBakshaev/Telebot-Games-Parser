@@ -18,7 +18,9 @@ def print_result(
     len_pricelist = len(sorted_prices)
 
     try:
+        # текст для сообщения результата вывода поиска игр
         result = get_formatted_text(len_pricelist, sorted_prices)
+        # вывод сообщения результата поиска игр
         print_result_text(bot, message, result)
     except Exception:
         return bot.send_message(message.chat.id, KEYS_NOT_FOUND)
