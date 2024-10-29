@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from src.constants import (
-    BANWORDS_IN_NAME, BANWORDS_IN_DESCRIPTION, PAGESIZE, PAGENUM, URL_PLATI,
-    TYPE_GAME_NAME)
+    BANWORDS_IN_NAME, BANWORDS_IN_DESCRIPTION, PAGESIZE, PAGENUM, URL_PLATI)
+from  src.exceptions import APIException, FilterException
 
 
 def plati(game_name: str, dict_price_url: dict) -> None:
@@ -14,7 +14,6 @@ def plati(game_name: str, dict_price_url: dict) -> None:
     :param game_name: название игры, введенное пользователем для поиска цен
     :param dict_price_url: словарь для заполнения ценой, ссылкой и названием
     """
-
     # API поиск игр
     url_plati = URL_PLATI.format(
         game_name=game_name,
@@ -24,7 +23,14 @@ def plati(game_name: str, dict_price_url: dict) -> None:
 
     try:
         response_plati = requests.get(url_plati)
-        response_plati.raise_for_status()
+        if response_plati.status_code != 200:
+            raise APIException
+
+    except APIException:
+        pass
+
+    else:
+
         response_dict = response_plati.json()
 
         # список продавцов
@@ -34,8 +40,7 @@ def plati(game_name: str, dict_price_url: dict) -> None:
         check_reliability(
             dict_price_url, repo_dicts, BANWORDS_IN_NAME,
             BANWORDS_IN_DESCRIPTION, game_name)
-    except Exception:
-        pass
+
 
 
 def check_reliability(
@@ -63,12 +68,13 @@ def check_reliability(
             # цена игры
             repo_price = int(repo_dict['price_rur'])
 
+        except FilterException:
+            continue
+
+        else:
             # Если проходит проверку на надежность, то
             # цена игры и ссылка добавляются в словарь
             dict_price_url[repo_price] = repo_url, full_name_in_site
-
-        except Exception:
-            continue
 
 
 def check_different_filters(
@@ -78,53 +84,53 @@ def check_different_filters(
 
     # Проверка названия игры
     if game_name not in name_in_site:
-        raise Exception
+        raise FilterException
 
     # Проверка слов исключений для названия
     if any(word in name_in_site for word in BANWORDS_IN_NAME):
-        raise Exception
+        raise FilterException
 
     # Проверка слов исключений для описания
     description = repo_dict['description'].lower()
     if any(word_des in description for word_des in BANWORDS_IN_DESCRIPTION):
-        raise Exception
+        raise FilterException
 
     # Проверка платформы Steam
     if 'steam' not in name_in_site:
         if 'steam' not in description:
-            raise Exception
+            raise FilterException
 
     # Рейтинг продавца
     if repo_dict['seller_rating'] < 100:
-        raise Exception
+        raise FilterException
 
     # Количество продаж
     sold = repo_dict['numsold']
     if sold < 30:
-        raise Exception
+        raise FilterException
 
     # Количество возвратов
     returns = repo_dict['count_returns']
     if returns > 5:
-        raise Exception
+        raise FilterException
 
     # Соотношение возвратов к продажам
     if returns / sold > 0.01:
-        raise Exception
+        raise FilterException
 
     # Количество позитивных отзывов
     positiveresponses = repo_dict['count_positiveresponses']
     if positiveresponses < 5:
-        raise Exception
+        raise FilterException
 
     # Количество негативных отзывов
     negativeresponses = repo_dict['count_negativeresponses']
     if negativeresponses > 5:
-        raise Exception
+        raise FilterException
 
     # Соотношение негативных отзывов к позитивным
     if negativeresponses / positiveresponses > 0.01:
-        raise Exception
+        raise FilterException
 
 
 def check_key_in_stock(repo_url: str) -> None:
@@ -132,7 +138,9 @@ def check_key_in_stock(repo_url: str) -> None:
 
     try:
         response_site = requests.get(repo_url)
-        response_site.raise_for_status()
+        if response_site.status_code != 200:
+            raise APIException
+
         soup_plati = BeautifulSoup(
             response_site.text, 'lxml')
 
@@ -140,13 +148,16 @@ def check_key_in_stock(repo_url: str) -> None:
         key_in_site = soup_plati.find(
             'div', class_='goods_order_form_subscribe')
         if key_in_site is not None:
-            raise Exception
+            raise FilterException
 
-    except Exception:
-        raise Exception
+    except FilterException:
+        raise FilterException
 
+    except APIException:
+        raise FilterException
 
 if __name__ == '__main__':
+    from src.constants import TYPE_GAME_NAME
     game_name = input(TYPE_GAME_NAME).lower()  # напр. disco elysium
     dict_price_url = {}
     plati(game_name, dict_price_url)
