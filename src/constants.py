@@ -12,6 +12,8 @@ HELP_TEXT = '''
 
 TYPE_GAME_NAME = 'Введите название игры, желательно, полное 😉 '
 
+BAN_SYMBOLS = set('@/*#!$%^?\[]{}-_)+(=;`~.,<>\'"|')
+
 WAITING_TEXT = '''
 Запрос выполняется.
 Пожалуйста, ожидайте...
@@ -104,22 +106,22 @@ RESULT_MSG_1 = '''
 KEYS_NOT_FOUND = '''
 Ключи не найдены.
 Пожалуйста, проверьте точное написание названия игры.
-Попробуйте заменить цифры на римские (например, Mafia II, 
-The Elder Scrolls V: Skyrim)
+Попробуйте заменить цифры на римские (например, Mafia II)
 '''
+
 EXAMPLE_SORTED_PRICES = [
     (3259, ('https://plati.market/itm/3901794',
-           'STARFIELD (STEAM/RU) 0% КАРТОЙ + ПОДАРОК')),
+            'STARFIELD (STEAM/RU) 0% КАРТОЙ + ПОДАРОК')),
     (3399, ('https://plati.market/itm/3898631',
-           'Starfield (Steam)  🔵 РФ-СНГ')),
+            'Starfield (Steam)  🔵 РФ-СНГ')),
     (5299, ('https://plati.market/itm/3898632',
-           'Starfield Premium Edition (Steam)🔵 РФ-СНГ')),
+            'Starfield Premium Edition (Steam)🔵 РФ-СНГ')),
     (5690, ('https://plati.market/itm/3782364',
-           'STARFIELD * RU/KZ/СНГ/TR/AR * STEAM АВТОДОСТАВКА')),
+            'STARFIELD * RU/KZ/СНГ/TR/AR * STEAM АВТОДОСТАВКА')),
     (5934, ('https://plati.market/itm/3782302',
-           'STARFIELD STANDARD/PREMIUM STEAM ⚡️АВТО RU+TR+KZ')),
+            'STARFIELD STANDARD/PREMIUM STEAM ⚡️АВТО RU+TR+KZ')),
     (6990, ('https://plati.market/itm/3782532',
-           '🌌🌟STARFIELD STEAM GIFT🌟🌌 ☑️РФ/МИР☑️')),
+            '🌌🌟STARFIELD STEAM GIFT🌟🌌 ☑️РФ/МИР☑️')),
     (7990, ('https://plati.market/itm/3782367',
-           'STARFIELD DIGITAL PREMIUM EDITION RU/KZ/СНГ/TR/AR')),
+            'STARFIELD DIGITAL PREMIUM EDITION RU/KZ/СНГ/TR/AR')),
 ]
