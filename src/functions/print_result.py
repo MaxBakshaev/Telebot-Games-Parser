@@ -3,27 +3,23 @@
 import telebot
 
 from src.constants import (
-    KEYS_NOT_FOUND, RESULT_MSG_5, RESULT_MSG_4, RESULT_MSG_3, RESULT_MSG_2,
-    RESULT_MSG_1)
+    KEYS_NOT_FOUND, RESULT_MSG_5, RESULT_MSG_4, RESULT_MSG_3,
+    RESULT_MSG_2, RESULT_MSG_1)
 
 
 def print_result(
         sorted_prices: list, bot: telebot.TeleBot,
-        message: telebot.types.Message) -> telebot.types.Message:
+        message: telebot.types.Message) -> None:
     """Выводит до 5 самых дешевых цен игр с ссылкой и названием
 
     :param sorted_prices: Список с ценами игр по возрастанию, ссылкой и
     названием
     """
     len_pricelist = len(sorted_prices)
-
-    try:
-        # текст для сообщения результата вывода поиска игр
-        result = get_formatted_text(len_pricelist, sorted_prices)
-        # вывод сообщения результата поиска игр
-        print_result_text(bot, message, result)
-    except Exception:
-        return bot.send_message(message.chat.id, KEYS_NOT_FOUND)
+    # текст для сообщения результата вывода поиска игр
+    result = get_formatted_text(len_pricelist, sorted_prices)
+    # вывод сообщения результата поиска игр
+    print_result_text(bot, message, result)
 
 
 def get_formatted_text(
@@ -41,7 +37,7 @@ def get_formatted_text(
     elif len_pricelist == 1:
         return RESULT_MSG_1.format(sorted_prices=sorted_prices)
     else:
-        raise Exception
+        return KEYS_NOT_FOUND
 
 
 def print_result_text(
