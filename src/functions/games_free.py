@@ -38,13 +38,14 @@ def free_games(bot: telebot.TeleBot, message: telebot.types.Message):
 
             # раздача + название игры
             game_info = post_info[1].split(' ')
-            # ссылка на игру
-            post_link = game_info[2]
 
-            if 'http' in post_link:
-                bot.send_message(
-                    message.chat.id, f'<b>{post_info[0]}:</b>\n'
-                                     f'{post_link}', parse_mode="html")
+            # после нахождения ссылки выводим результат
+            for elem in game_info:
+                if 'http' in elem:
+                    bot.send_message(
+                        message.chat.id, f'<b>{post_info[0]}:</b>\n'
+                                         f'{elem}', parse_mode="html")
+                    break
 
 
 if __name__ == '__main__':
@@ -72,8 +73,9 @@ if __name__ == '__main__':
                     post_info.append(element)
 
             game_info = post_info[1].split(' ')
-            post_link = game_info[2]
 
-            if 'http' in post_link:
-                print(f'{post_info[0]}\n'
-                      f'{post_link}')
+            for elem in game_info:
+                if 'http' in elem:
+                    print(f'{post_info[0]}\n'
+                          f'{elem}')
+                    break
