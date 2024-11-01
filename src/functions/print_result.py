@@ -3,8 +3,8 @@
 import telebot
 
 from src.constants import (
-    KEYS_NOT_FOUND, RESULT_MSG_5, RESULT_MSG_4, RESULT_MSG_3,
-    RESULT_MSG_2, RESULT_MSG_1)
+    KEYS_NOT_FOUND, RESULT_MSG_5, RESULT_MSG_4, RESULT_MSG_3, RESULT_MSG_2,
+    RESULT_MSG_1)
 
 
 def print_result(

@@ -7,3 +7,7 @@ class FilterException(Exception):
 
 class APIException(Exception):
     pass
+
+
+class RequestException(Exception):
+    pass

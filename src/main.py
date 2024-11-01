@@ -8,8 +8,8 @@ import telebot
 
 from constants import (
     GREETING_TEXT, HELP_TEXT, TYPE_GAME_NAME, WAITING_TEXT, BAN_SYMBOLS,
-    KEYS_NOT_FOUND)
-from functions import platimarket, steampay, print_result, games_free
+    KEYS_NOT_FOUND, HOW_MANY_GAMES_PRINT)
+from functions import platimarket, steampay, print_result, games_free, expected
 
 time.sleep(5)
 
@@ -86,6 +86,8 @@ def step_after_find_keys(message: telebot.types.Message) -> None:
         helper(message)
     elif '/search' in message.text:
         search_game(message)
+    elif '/expect' in message.text:
+        most_expected_games(message)
     # или продолжить искать игры
     else:
         find_keys(message)
@@ -125,8 +127,80 @@ def step_after_search_free_games(message: telebot.types.Message) -> None:
         search_free_games(message)
     elif '/search' in message.text:
         search_game(message)
+    elif '/expect' in message.text:
+        most_expected_games(message)
     else:
         helper(message)
+
+
+@bot.message_handler(commands=['expect'])
+def most_expected_games(message: telebot.types.Message) -> None:
+    """Запрашивает количество игр и переходит к функции поиска"""
+
+    bot.send_message(message.chat.id, HOW_MANY_GAMES_PRINT)
+
+    bot.register_next_step_handler(message, find_most_expected_games)
+
+
+def find_most_expected_games(message):
+    """Получает количество игр, проверяет его на запрещенные символы и
+    переходит к функции поиска самых ожидаемых игр"""
+
+    message_amount_games = message.text.lower()
+
+    # проверка на введенные пользователем запрещеные символы
+    bad_sym = check_bad_symbols_(message_amount_games)
+
+    if not bad_sym:
+        try:
+            amount_posts = int(message_amount_games)
+
+        except ValueError:
+            bot.send_message(
+                message.chat.id, HOW_MANY_GAMES_PRINT)
+            bot.register_next_step_handler(message, find_most_expected_games)
+
+        else:
+            if amount_posts in range(1, 41):
+
+                # Получить информацию об ожидаемых играх
+                expected.get_expected(bot, message, amount_posts)
+
+                # Что делать после вывода результата
+                bot.register_next_step_handler(
+                    message, step_after_most_expected)
+
+            else:
+                bot.send_message(
+                    message.chat.id, HOW_MANY_GAMES_PRINT)
+                bot.register_next_step_handler(
+                    message, find_most_expected_games)
+    else:
+        bot.send_message(
+            message.chat.id, HOW_MANY_GAMES_PRINT)
+        bot.register_next_step_handler(message, find_most_expected_games)
+
+
+def check_bad_symbols_(message_amount_games: str) -> bool:
+    """Не дает искать количество игр из сообщения с запрещенными символами"""
+    if set(message_amount_games) & BAN_SYMBOLS:
+        return True
+
+
+def step_after_most_expected(message: telebot.types.Message) -> None:
+    """Действие после завершения функции find_most_expected_games()"""
+
+    # Ввести команду
+    if '/start' in message.text:
+        start(message)
+    elif '/free' in message.text:
+        search_free_games(message)
+    elif '/search' in message.text:
+        search_game(message)
+    elif '/expect' in message.text:
+        most_expected_games(message)
+    else:
+        find_most_expected_games(message)
 
 
 if __name__ == '__main__':
