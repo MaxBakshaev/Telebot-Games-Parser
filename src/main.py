@@ -34,7 +34,27 @@ def search_game(message: telebot.types.Message) -> None:
     """Выводит сообщение, после которого запускается функция поиска ключей"""
     bot.send_message(
         message.chat.id, TYPE_GAME_NAME)
-    bot.register_next_step_handler(message, find_keys)
+
+    bot.register_next_step_handler(message, step_after_search_game)
+
+
+def step_after_search_game(message: telebot.types.Message) -> None:
+    """Действие после завершения функции find_keys()"""
+
+    # Ввести команду
+    if '/start' in message.text:
+        start(message)
+    elif '/free' in message.text:
+        search_free_games(message)
+    elif '/help' in message.text:
+        helper(message)
+    elif '/search' in message.text:
+        search_game(message)
+    elif '/expect' in message.text:
+        most_expected_games(message)
+    # или продолжить искать игры
+    else:
+        find_keys(message)
 
 
 def find_keys(message: telebot.types.Message) -> None:
@@ -68,29 +88,10 @@ def find_keys(message: telebot.types.Message) -> None:
         print_result.print_result(sorted_prices, bot, message)
 
         # Что делать после вывода результата
-        bot.register_next_step_handler(message, step_after_find_keys)
+        bot.register_next_step_handler(message, step_after_search_game)
 
     else:
-        bot.register_next_step_handler(message, find_keys)
-
-
-def step_after_find_keys(message: telebot.types.Message) -> None:
-    """Действие после завершения функции find_keys()"""
-
-    # Ввести команду
-    if '/start' in message.text:
-        start(message)
-    elif '/free' in message.text:
-        search_free_games(message)
-    elif '/help' in message.text:
-        helper(message)
-    elif '/search' in message.text:
-        search_game(message)
-    elif '/expect' in message.text:
-        most_expected_games(message)
-    # или продолжить искать игры
-    else:
-        find_keys(message)
+        bot.register_next_step_handler(message, step_after_search_game)
 
 
 def check_bad_symbols(game_name: str, message: telebot.types.Message) \
@@ -139,7 +140,25 @@ def most_expected_games(message: telebot.types.Message) -> None:
 
     bot.send_message(message.chat.id, HOW_MANY_GAMES_PRINT)
 
-    bot.register_next_step_handler(message, find_most_expected_games)
+    bot.register_next_step_handler(message, step_after_most_expected)
+
+
+def step_after_most_expected(message: telebot.types.Message) -> None:
+    """Действие после завершения функции find_most_expected_games()"""
+
+    # Ввести команду
+    if '/start' in message.text:
+        start(message)
+    elif '/free' in message.text:
+        search_free_games(message)
+    elif '/search' in message.text:
+        search_game(message)
+    elif '/expect' in message.text:
+        most_expected_games(message)
+    elif '/help' in message.text:
+        helper(message)
+    else:
+        find_most_expected_games(message)
 
 
 def find_most_expected_games(message):
@@ -158,7 +177,7 @@ def find_most_expected_games(message):
         except ValueError:
             bot.send_message(
                 message.chat.id, HOW_MANY_GAMES_PRINT)
-            bot.register_next_step_handler(message, find_most_expected_games)
+            bot.register_next_step_handler(message, step_after_most_expected)
 
         else:
             if amount_posts in range(1, 41):
@@ -174,33 +193,17 @@ def find_most_expected_games(message):
                 bot.send_message(
                     message.chat.id, HOW_MANY_GAMES_PRINT)
                 bot.register_next_step_handler(
-                    message, find_most_expected_games)
+                    message, step_after_most_expected)
     else:
         bot.send_message(
             message.chat.id, HOW_MANY_GAMES_PRINT)
-        bot.register_next_step_handler(message, find_most_expected_games)
+        bot.register_next_step_handler(message, step_after_most_expected)
 
 
 def check_bad_symbols_(message_amount_games: str) -> bool:
     """Не дает искать количество игр из сообщения с запрещенными символами"""
     if set(message_amount_games) & BAN_SYMBOLS:
         return True
-
-
-def step_after_most_expected(message: telebot.types.Message) -> None:
-    """Действие после завершения функции find_most_expected_games()"""
-
-    # Ввести команду
-    if '/start' in message.text:
-        start(message)
-    elif '/free' in message.text:
-        search_free_games(message)
-    elif '/search' in message.text:
-        search_game(message)
-    elif '/expect' in message.text:
-        most_expected_games(message)
-    else:
-        find_most_expected_games(message)
 
 
 if __name__ == '__main__':
