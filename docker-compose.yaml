@@ -1,0 +1,15 @@
+version: '4.35.1'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot
+    volumes:
+      - ./:/app
+    env_file:
+      - ./.env
+    restart: always
+
+#docker-compose up --build
