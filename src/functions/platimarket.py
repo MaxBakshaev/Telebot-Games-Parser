@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from src.constants import (
     BANWORDS_IN_NAME, BANWORDS_IN_DESCRIPTION, PAGESIZE, PAGENUM, URL_PLATI)
-from  src.exceptions import APIException, FilterException
+from src.exceptions import APIException, FilterException
 
 
 def plati(game_name: str, dict_price_url: dict) -> None:
@@ -40,7 +40,6 @@ def plati(game_name: str, dict_price_url: dict) -> None:
         check_reliability(
             dict_price_url, repo_dicts, BANWORDS_IN_NAME,
             BANWORDS_IN_DESCRIPTION, game_name)
-
 
 
 def check_reliability(
@@ -155,6 +154,7 @@ def check_key_in_stock(repo_url: str) -> None:
 
     except APIException:
         raise FilterException
+
 
 if __name__ == '__main__':
     from src.constants import TYPE_GAME_NAME

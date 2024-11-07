@@ -6,10 +6,15 @@ import time
 from dotenv import load_dotenv
 import telebot
 
-from constants import (
+from src.constants import (
     GREETING_TEXT, HELP_TEXT, TYPE_GAME_NAME, WAITING_TEXT, BAN_SYMBOLS,
     KEYS_NOT_FOUND, HOW_MANY_GAMES_PRINT)
-from functions import platimarket, steampay, print_result, games_free, expected
+# from functions import platimarket, steampay, print_result, games_free, expected
+from src.functions.platimarket import plati
+from src.functions.steampay import steam_pay
+from src.functions.print_result import print_result
+from src.functions.games_free import free_games
+from src.functions.expected import get_expected
 
 time.sleep(5)
 
@@ -73,10 +78,10 @@ def find_keys(message: telebot.types.Message) -> None:
         dict_price_url = {}
 
         # Поиск ключей на сайте plati.ru
-        platimarket.plati(game_name, dict_price_url)
+        plati(game_name, dict_price_url)
 
         # Поиск ключей на сайте steampay.com
-        steampay.steam_pay(game_name, dict_price_url)
+        steam_pay(game_name, dict_price_url)
 
         # Сортировка полученных цен по возрастанию
         sorted_prices = sorted(dict_price_url.items())
@@ -85,7 +90,7 @@ def find_keys(message: telebot.types.Message) -> None:
         bot.delete_message(message.chat.id, msg.id)
 
         # Вывод результата для топ-5 цен
-        print_result.print_result(sorted_prices, bot, message)
+        print_result(sorted_prices, bot, message)
 
         # Что делать после вывода результата
         bot.register_next_step_handler(message, step_after_search_game)
@@ -109,7 +114,7 @@ def search_free_games(message: telebot.types.Message) -> None:
     mseg = bot.send_message(message.chat.id, WAITING_TEXT)
 
     # Получить информацию о раздаче игр
-    games_free.free_games(bot, message)
+    free_games(bot, message)
 
     # Удалить сообщение mseg
     bot.delete_message(message.chat.id, mseg.id)
@@ -183,7 +188,7 @@ def find_most_expected_games(message):
             if amount_posts in range(1, 41):
 
                 # Получить информацию об ожидаемых играх
-                expected.get_expected(bot, message, amount_posts)
+                get_expected(bot, message, amount_posts)
 
                 # Что делать после вывода результата
                 bot.register_next_step_handler(
