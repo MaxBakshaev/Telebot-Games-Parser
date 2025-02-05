@@ -41,7 +41,7 @@ pip install -r requirements.txt
 ```
 5. Запуск и остановка бота:
 ```
-python src/main.py
+python main.py
 ```
 ```
 Ctrl + C
