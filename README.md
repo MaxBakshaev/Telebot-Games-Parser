@@ -12,6 +12,7 @@
 * __/start__ - начало работы с ботом.
 * __/search__ -  найти самые дешевые игры для Steam.
 * __/free__ - получить информацию о раздаче бесплатных игр.
+* __/expect__ - показать самые ожидаемые игры.
 * __/help__ - основные возможности бота.
 
 ---
@@ -22,27 +23,44 @@
 
 
 2. Склонируйте репозиторий и перейдите в рабочую директорию проекта:
+
 ```
-git clone git@github.com:MaxBakshaev/Telebot-Games-Parser.git
+git clone https://github.com/MaxBakshaev/Telebot-Games-Parser.git
 ```
 ```
 cd Telebot-Games-Parser
 ```
-3. Создайте и активируйте виртуальную среду:
+
+3. Создайте виртуальную среду:
 ```
 python -m venv venv
 ```
+
+4. Активируйте виртуальную среду:
+
+Для Linux или macOS:
+```
+source venv/bin/activate
+```
+Для Windows:
 ```
 venv\Scripts\activate
 ```
-4. Установите зависимости:
+5. Установите зависимости:
 ```
 pip install -r requirements.txt
 ```
-5. Запуск и остановка бота:
+6. Запустите бота:
 ```
 python main.py
 ```
+Для остановки бота используйте команду:
 ```
 Ctrl + C
+```
+
+
+### Запуск тестов:
+```
+pytest main.py src/tests
 ```
