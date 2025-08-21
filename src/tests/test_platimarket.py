@@ -11,7 +11,7 @@ from src.functions import platimarket
 class TestPlatimarket(unittest.TestCase):
 
     def setUp(self):
-        self.game_name = 'the witcher 3'
+        self.game_name = 'cyberpunk 2077'
         self.fake_game_name = 'gvddrfvgdf'
         self.dict_price_url = {}
         self.url_plati = URL_PLATI.format(
@@ -53,7 +53,7 @@ class TestPlatimarket(unittest.TestCase):
             any(word in self.name_in_site for word in BANWORDS_IN_NAME))
         self.assertFalse(any(word_des in self.description for word_des in
                              BANWORDS_IN_DESCRIPTION))
-        #self.assertFalse('steam' not in self.name_in_site)
+        self.assertFalse('steam' not in self.name_in_site)
         self.assertFalse('steam' not in self.description)
         self.assertFalse(self.repo_dict['seller_rating'] < 100)
         self.assertFalse(self.sold < 30)
